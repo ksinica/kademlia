@@ -7,11 +7,11 @@ import (
 )
 
 func newRand() *rand.Rand {
-	return rand.New(rand.NewSource(1))
+	return rand.New(rand.NewSource(0))
 }
 
-func randBytes(size int) []byte {
-	b, rand := make([]byte, size), newRand()
+func randBytes(rand *rand.Rand, size int) []byte {
+	b := make([]byte, size)
 	for i := range b {
 		b[i] = byte(rand.Intn(0xff))
 	}
@@ -19,9 +19,9 @@ func randBytes(size int) []byte {
 }
 
 func randBigInts(n, size int) (ret []*big.Int) {
-	m := make(map[string]struct{})
+	m, rand := make(map[string]struct{}), newRand()
 	for len(m) < n {
-		m[string(randBytes(size))] = struct{}{}
+		m[string(randBytes(rand, size))] = struct{}{}
 	}
 
 	for k := range m {
