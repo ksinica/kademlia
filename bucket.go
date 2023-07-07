@@ -26,7 +26,7 @@ func (b *bucket) cmp(z *big.Int) int {
 }
 
 func (b *bucket) put(c Contact, k int) (ok bool) {
-	if b.contacts.length() == 0 {
+	if b.contacts.len() == 0 {
 		b.contacts.set(c.ID(), c)
 		return true
 	}
@@ -35,7 +35,7 @@ func (b *bucket) put(c Contact, k int) (ok bool) {
 		return true
 	}
 
-	if k < 0 || b.contacts.length() < k {
+	if k < 0 || b.contacts.len() < k {
 		b.contacts.set(c.ID(), c)
 		return true
 	}
@@ -90,7 +90,7 @@ func (b *bucket) depth() int {
 		bits = 8
 	)
 
-	switch b.contacts.length() {
+	switch b.contacts.len() {
 	case 0:
 		return 0
 	case 1:

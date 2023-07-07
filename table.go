@@ -27,7 +27,7 @@ type table struct {
 }
 
 func (t *table) containsHomeID(b *bucket) (ok bool) {
-	ok = t.homeIDs.length() > 0
+	ok = t.homeIDs.len() > 0
 	t.homeIDs.forEach(func(id *big.Int, _ struct{}) bool {
 		if b.cmp(id) != 0 {
 			ok = false
