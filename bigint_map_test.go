@@ -32,7 +32,7 @@ func randBigInts(n, size int) (ret []*big.Int) {
 
 func BenchmarkIntMapSet256(b *testing.B) {
 	keys := randBigInts(b.N, 256/8)
-	var m intMap[struct{}]
+	var m bigIntMap[struct{}]
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -42,7 +42,7 @@ func BenchmarkIntMapSet256(b *testing.B) {
 
 func BenchmarkIntMapContains256(b *testing.B) {
 	keys := randBigInts(b.N, 256/8)
-	var m intMap[struct{}]
+	var m bigIntMap[struct{}]
 
 	for _, k := range keys {
 		m.set(k, struct{}{})

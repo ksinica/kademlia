@@ -3,7 +3,6 @@ package kademlia
 import (
 	"math/big"
 	"sort"
-	"sync"
 )
 
 const (
@@ -19,8 +18,7 @@ type Table interface {
 
 // table is a dynamic sized Kademlia routing table.
 type table struct {
-	mu      sync.RWMutex
-	homeIDs intMap[struct{}]
+	homeIDs bigIntMap[struct{}]
 	buckets []*bucket
 	B       *big.Int
 	k, b    int
@@ -38,7 +36,7 @@ func (t *table) containsHomeID(b *bucket) (ok bool) {
 	return
 }
 
-func (t *table) search(id *big.Int) (ret int) {
+func (t *table) findBucket(id *big.Int) (ret int) {
 	ret = sort.Search(len(t.buckets), func(i int) bool {
 		return t.buckets[i].cmp(id) < 1
 	})
@@ -55,14 +53,11 @@ func (t *table) Put(contact Contact) {
 		return
 	}
 
-	t.mu.Lock()
-	defer t.mu.Unlock()
-
 	if t.buckets == nil {
 		t.buckets = []*bucket{newBucket(zero, t.B)}
 	}
 
-	i := t.search(contact.ID())
+	i := t.findBucket(contact.ID())
 	if i < 0 {
 		return
 	}
@@ -94,10 +89,7 @@ func (t *table) Put(contact Contact) {
 }
 
 func (t *table) closestContacts(id *big.Int, n int, f func(Contact)) {
-	t.mu.RLock()
-	defer t.mu.RUnlock()
-
-	i := t.search(id)
+	i := t.findBucket(id)
 	if i < 0 {
 		return
 	}
@@ -140,9 +132,7 @@ func (t *table) ClosestContacts(id *big.Int, n int) (ret []Contact) {
 }
 
 func (t *table) PutHomeID(id *big.Int) {
-	t.mu.Lock()
 	t.homeIDs.set(id, struct{}{})
-	t.mu.Unlock()
 }
 
 func WithHomeID(id *big.Int) func(*table) {

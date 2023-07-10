@@ -5,7 +5,7 @@ import (
 )
 
 type bucket struct {
-	contacts intMap[Contact]
+	contacts bigIntMap[Contact]
 	from, to *big.Int
 }
 
