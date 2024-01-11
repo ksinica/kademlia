@@ -21,7 +21,7 @@ func (m *bigIntMap[T]) set(key *big.Int, value T) {
 	if m.m == nil {
 		m.m = make(map[string]bigIntMapEntry[T])
 	}
-	m.m[string(unsafeToBytes(key))] = bigIntMapEntry[T]{
+	m.m[unsafeBigIntToString(key)] = bigIntMapEntry[T]{
 		key:   key,
 		value: value,
 	}
@@ -32,7 +32,7 @@ func (m *bigIntMap[T]) set(key *big.Int, value T) {
 // is present. The ok result indicates whether value was found in the map.
 func (m *bigIntMap[T]) get(key *big.Int) (value T, ok bool) {
 	if m.m != nil {
-		e, ok := m.m[string(unsafeToBytes(key))]
+		e, ok := m.m[unsafeBigIntToString(key)]
 		runtime.KeepAlive(key)
 		return e.value, ok
 	}
